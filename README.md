@@ -24,7 +24,7 @@ HTTP Request → Calls Google Trends API (via SerpAPI).
 
 Code Node → Filters and selects top technology trend.
 
-Remove Duplicates → Prevents reposting old trends.
+Remove Duplicates → Ensures no repeat trends within the same day.
 
 Create Tweet → Posts keyword to Twitter/X.
 
