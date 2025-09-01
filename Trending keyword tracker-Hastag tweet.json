@@ -1,0 +1,281 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 1,
+              "triggerAtMinute": 10
+            },
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3bde546b-ded1-445b-a00a-43029aacac70",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search.json?engine=google_trends_trending_now&api_key=5dc6a2da872702ec1d9189834762ce3eb51306664c2545dbd24c18b93828696e",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "dad9bf8e-d11d-43ee-8b6a-3ffd6a5e4c37",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "text": "=top trending tech keyword is :#{{ $json[\"query\"] }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "bd79541a-a69d-4ae9-8b66-0c6d59865079",
+      "name": "Create Tweet",
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "VvtxDy0wDRdmJ0pE",
+          "name": "X account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1YLuA1NtoYbpR_BlxbUB-5RPk_J2uZ2YK6PS9JJCC9lQ",
+          "mode": "list",
+          "cachedResultName": "Trends",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YLuA1NtoYbpR_BlxbUB-5RPk_J2uZ2YK6PS9JJCC9lQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YLuA1NtoYbpR_BlxbUB-5RPk_J2uZ2YK6PS9JJCC9lQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Top_trend",
+              "displayName": "Top_trend",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1296,
+        0
+      ],
+      "id": "e7765e41-ecdc-4f26-af2c-e538dfc9c005",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "bmSvIca6pQ80np0D",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "removeItemsSeenInPreviousExecutions",
+        "dedupeValue": "={{ $json.query }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "ab608e46-08db-4f73-aee6-8fe925b1f4a7",
+      "name": "Remove Duplicates"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all().map((item) => item.json);\nconst technologyTrends = items\n  .flatMap((item) => item.trending_searches)\n  .filter((search) => search.categories.some((category) => category.name === \"Technology\"))\n  .sort((a, b) => b.search_volume - a.search_volume);\n\nconst topTrend = technologyTrends[0];\n\nif (!topTrend) {\n  // No top trend found, return empty array to stop further processing\n  return [];\n}\n\nreturn [{ json: { query: topTrend.query } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "9b5fdf74-bff3-4ead-98e8-92ec91359f51",
+      "name": "Filter Technolgy Tag and give top trend"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4c1b3844-ad28-439d-a05f-aa5396953b87",
+              "name": "Date",
+              "value": "= {{ $now.format('dd-MM-yyyy') }}",
+              "type": "string"
+            },
+            {
+              "id": "d04e0cb0-1e00-4582-a1ff-f9acebb4f041",
+              "name": "Time",
+              "value": "={{ $now.format('HH:mm:ss') }}",
+              "type": "string"
+            },
+            {
+              "id": "7a1900b2-1735-44ff-9605-9530bdc9cf48",
+              "name": "Top_trend",
+              "value": "={{ $json[\"text\"].match(/#([A-Za-z0-9\\s]+)/)?.[1]?.trim() || '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1056,
+        0
+      ],
+      "id": "8b3f0f1d-bc3b-44a1-8de8-31b8d8db99bb",
+      "name": "set tag"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Filter Technolgy Tag and give top trend",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Tweet": {
+      "main": [
+        [
+          {
+            "node": "set tag",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Create Tweet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Filter Technolgy Tag and give top trend": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set tag": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7bae143f-3751-44e2-8723-fdd13667ff7e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "196f0b06dd21378aebe1988d894c0fab380e3857eeb5804e552056f985e27911"
+  },
+  "id": "PPOigBbRME7rTPdo",
+  "tags": []
+}
