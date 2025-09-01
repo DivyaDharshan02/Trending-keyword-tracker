@@ -28,7 +28,7 @@ Remove Duplicates → Ensures no repeat trends within the same day.
 
 Create Tweet → Posts keyword to Twitter/X.
 
-Edit Fields → Prepares metadata (Date, Time, Trend).
+Set Fields → Prepares metadata (Date, Time, Trend).
 
 Google Sheets → Appends data to a tracking sheet.
 
