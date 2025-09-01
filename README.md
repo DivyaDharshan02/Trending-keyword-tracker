@@ -24,11 +24,11 @@ HTTP Request → Calls Google Trends API (via SerpAPI).
 
 Code Node → Filters and selects top technology trend.
 
-Remove Duplicates → Ensures no repeated trends within the same day.
+Remove Duplicates → Ensures no repeated trends within the same day(Dedupe).
 
 Create Tweet → Posts keyword to Twitter/X.
 
-Set Fields → Prepares metadata (Date, Time, Trend).
+Set Fields → Prepares metadata (Date, Time, Top Trend).
 
 Google Sheets → Appends data to a tracking sheet.
 
