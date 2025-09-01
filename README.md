@@ -18,7 +18,7 @@ This project is an automated workflow built with n8n that fetches the latest tre
 
 🛠️ Workflow Overview :
 
-Schedule Trigger → Runs daily at 17:00.
+Schedule Trigger → Runs daily at 01:10 am.
 
 HTTP Request → Calls Google Trends API (via SerpAPI).
 
