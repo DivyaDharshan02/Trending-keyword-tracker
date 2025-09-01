@@ -18,13 +18,13 @@ This project is an automated workflow built with n8n that fetches the latest tre
 
 🛠️ Workflow Overview :
 
-Schedule Trigger → Runs daily at 01:10 am.
+Schedule Trigger → Runs daily at 01:10 am(IST).
 
 HTTP Request → Calls Google Trends API (via SerpAPI).
 
 Code Node → Filters and selects top technology trend.
 
-Remove Duplicates → Ensures no repeat trends within the same day.
+Remove Duplicates → Ensures no repeated trends within the same day.
 
 Create Tweet → Posts keyword to Twitter/X.
 
